@@ -1,0 +1,27 @@
+<html>
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/js.js"></script>
+<script type="text/javascript">
+	var flag=true;
+	function change(){
+		if(flag){
+			flag=false;
+			$("#a").hide();
+		}else{
+			flag=true;
+			$("#a").show();
+		}
+	}
+</script>
+
+
+<body>
+<h2>Hello World!</h2>
+<img  src="image/1.jpg" width="100px;" height="100px">
+<img  src="image/2.jpg" width="200px;" height="200px">
+<div id="a">
+	<img id="b"  src="image/chm.jpg" width="600px;" height="400px">
+</div>
+<input type="button" value="submit" onclick="chage();" style="background-color: red"/>
+</body>
+</html>
