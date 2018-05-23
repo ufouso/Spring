@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.xpp.example</groupId>
+  <artifactId>SpringBoot</artifactId>
+   <!-- 部署到tomcat中需要使用 -->
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>SpringBoot Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+	<parent>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-parent</artifactId>
+	    <version>1.5.7.RELEASE</version>
+	</parent>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+	
+	<dependencies>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+		          <!-- 移除嵌入式tomcat插件 -->
+			    <exclusion>
+			      <groupId>org.springframework.boot</groupId> 
+			      <artifactId>spring-boot-starter-tomcat</artifactId>
+			    </exclusion>
+			    <!-- 去除默认的配置,使用log4j2的时候需要移除，logback的话就需要这个 -->
+			   <!--  <exclusion>  
+	                <groupId>org.springframework.boot</groupId>  
+	                <artifactId>spring-boot-starter-logging</artifactId>  
+	            </exclusion>  -->
+			</exclusions>
+	    </dependency>
+	    
+	    <!-- 添加servlet-api的依赖 -->
+	    <dependency>
+		  <groupId>javax.servlet</groupId>
+		  <artifactId>javax.servlet-api</artifactId>
+		  <scope>provided</scope>
+		</dependency>
+		<!-- 数据库连接 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		
+		<!-- fastJson -->		
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>1.1.35</version>
+		</dependency>
+		<!-- Gson -->
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		</dependency>
+		
+		<!-- 添加redis缓存 -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-redis</artifactId>
+		    <version>1.3.8.RELEASE</version>
+		</dependency>
+
+		<!-- <dependency>
+	       <groupId>org.springframework.boot</groupId>
+	       <artifactId>spring-boot-starter-test</artifactId>
+	       <scope>test</scope>
+	    </dependency> -->
+	    
+	    <!-- http请求连接池，以下这两个在spring-boot-starter-web中已经有了，
+	    	不需要重复配置，httpclient-cache这个没有需要添加上去 -->
+		<!-- <dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.4.6</version>
+		</dependency> -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient-cache</artifactId>
+			<version>4.5.2</version>
+		</dependency>
+		
+		
+	</dependencies>
+  <build>
+    <finalName>SpringBoot</finalName>
+    <plugins>
+            <plugin>  
+	            <groupId>org.springframework.boot</groupId>  
+	            <artifactId>spring-boot-maven-plugin</artifactId>  
+	            <configuration>  
+	                <mainClass>com\xpp\test\Application</mainClass>  
+	            </configuration>  
+	        </plugin>
+            
+            
+            <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <skipTests>true</skipTests>
+                    打成war包时名字
+                    <warName>web-api</warName>
+                    maven 启用的main路径（因为其他包里面测试时也加了main函数）
+                    <mainClass>com\xpp\test\Application</mainClass>
+                    <skip>true</skip>跳过测试
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin> -->
+        </plugins>
+  </build>
+</project>

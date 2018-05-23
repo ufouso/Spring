@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="scripts/avalon.js"></script>
+	<script src="scripts/a.js"></script>
+	<!-- <script type="text/javascript">
+	var vm = avalon.define({
+		$id: "test",
+		aaa: "ufo1"
+	});
+	</script> -->
+	<style type="text/css">
+		/* .f{
+			background-color:yellow;
+		} */
+	</style>
+</head>
+<!--当avalon的扫描引擎打描到ms-controller/ms-important所在元素时, 
+会尝试移除ms-controller类名，所以不推荐类名使用ms-controller -->
+<body>
+<h2>Hello World!</h2>
+<p>你好!</p>
+<div ms-controller="test">
+ 	<p>Hello,{{@aaa}}!</p>
+ 	<!-- 这个性能差点 -->
+	<div>{{@aaa}}{{@bbb}}</div>
+	<!-- 这个性能好 -->
+	<p>{{@aaa+@bbb}}</p>
+	<!-- 选择器必须放在表达式的后面 -->
+	<p>{{@aaa+@bbb | uppercase}}</p>
+	<p>{{@aaa+@bbb | lowercase}}</p>
+	<!-- 跳过某一部分区域，方便原样输出 ,输出的结果是{{@ccc}}，没有获取值-->
+	<div ms-skip='true'>{{@ccc}}</div>
+	<p>{{@ccc}}</p>
+	
+	
+	
+	<div>
+		<table>
+			
+		</table>
+	</div>
+</div>
+
+<div ms-important="faker">
+	<h1>{{@name}}</h1>
+	<p :attr="@One">直接引用对象</p>
+	<img :attr="{src: @path}"/>
+	<ul>
+		<li :for="el in @obj">
+			name:{{el.name}}
+		</li>
+	</ul>
+	<ul>
+		<li :for="(k, v) in @obj">
+			{{k}}:{{v.name}}
+		</li>
+	</ul>
+	
+	<!-- 注意对象里面的 background-color不能这么写，需要使用驼峰命名的方式-->
+	<p :css="{backgroundColor:@color1}">
+		你说你，想要逃，偏偏注定要落脚
+	</p>
+	
+	<div :css="[@obj1, @toggle && @color]" :click="@toggle =! @toggle">
+		选择性添加多余属性或重写已有属性
+	</div>
+	
+	<span :css="{backgroundImage: 'url('+@path+')'}">图片</span>
+	<br>
+	<span :text="@name"></span>
+	<div :class="@aaa">张三</div>
+	<span :class="[@aaa, toggle && @bbb]">李四</span>
+	<span :class="[@aaa+4]">王五</span>
+	<span :active="@aaa">点击</span>
+	<button type="button" :click="@toggle =!@toggle">点一下</button>
+	<div :if="@toggle">{{@aaa}}</div>
+	<div :visible="@toggle">{{@bbb}}</div>
+</div>
+<!-- 这种写法不被允许，在IE里面是无法识别的 -->
+<p :attr="{style: 'background-color:yellow'}">1111</p>
+
+<hr>
+<div :controller="TT">
+	
+	<div :for="(index, el) in @array | limitBy(3) as items">
+		<div>{{index+1}}:{{el}}</div>	
+		<input type="text" :duplex="@array[index]"/>
+	</div>
+	<ul>
+		<!-- ms-for: el in @array -->
+		<li>{{el}}</li>
+		<!-- ms-for-end -->
+	</ul>
+	<div :html="@html"></div>
+	<div :if="@one.bbb">谁的
+		{{@show(@one,'bbb','ccc')}}
+	</div>
+	
+</div>
+<hr/>
+<hr/>
+<div :controller="testClick">
+	<!-- <input type="text" :buplex="@name"> -->
+	1.<button type="button" ms-click="@testOne($event, 100, @name)">testOne</button>
+	2.<button type="button" ms-click="@testTwo($event)">testTwo</button>
+	<div>{{@status}}</div>
+	3.<input ms-on-input="@testThree($event)">
+	<div>{{@field}}</div>
+	4.	<button type="button" ms-click="@testFour()">testThree</button>
+		<!-- 点击之后，count1,count2, count3同时增加数字 -->
+	5. <button :click="@testFive1" ms-click-2="@testFive2" ms-click-3="@testFive3">{{@count}}</button>
+	6. <button :click="@testFive2">{{@count}}</button>
+	7. <button :click="@testFive3">{{@count}}</button>
+	<div>{{@count1}}</div>
+	<div>{{@count2}}</div>
+	<div>{{@count3}}</div>
+</div>
+
+<hr/>
+<hr/>
+<div :controller="testduplex">
+	<!-- 当控件失去焦点的时候，再同步数据 -->
+	<input :duplex="@username | change"/>{{@username}}
+	<!-- 有延迟的显示 -->
+	<input :duplex="@password | debounce(300)" type="password"/>{{@password}}
+	
+	<textarea rows="" cols="" :duplex="@textArea"></textarea>{{@textArea}}
+	<!-- div想要使用上这个功能，需要添加上div设置了contenteditable为true -->
+	<div contenteditable="true"  :duplex="div">
+	</div>
+	<p>{{@div}}</p>
+	
+	<!-- 设置默认选中 -->
+	<input type="radio" value="11"  ms-duplex="@aaa"/>
+    <input type="radio" value="22"  ms-duplex="@aaa"/>
+    <input type="radio" value="33"  ms-duplex="@aaa"/>
+	<!-- 设置默认选中 -->
+	<input type="checkbox" value="11"  ms-duplex="@bbb"/>
+    <input type="checkbox" value="22"  ms-duplex="@bbb"/>
+    <input type="checkbox" value="33"  ms-duplex="@bbb"/>
+    <!-- 设置默认选中 -->
+    <input type="checkbox"  ms-duplex-checked="true"/>
+</div>
+	
+
+</body>
+</html>
