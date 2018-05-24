@@ -3,8 +3,16 @@
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="scripts/avalon.js"></script>
-	<script src="scripts/a.js"></script>
+	<!-- <script src="scripts/avalon.js"></script>
+	<script src="scripts/a.js"></script> -->
+	
+	<script type="text/javascript" src="scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery.pagination.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/reset.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="css/highlight.min.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="css/common.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="css/pagination.css" media="screen">
+	
 	<!-- <script type="text/javascript">
 	var vm = avalon.define({
 		$id: "test",
@@ -22,16 +30,39 @@
 <body>
 <h2>Hello World!</h2>
 <p>你好!</p>
-<div ms-controller="test">
+
+<!-- <div>
+	<div class="M-box4"></div>
+</div> -->
+<!-- <script type="text/javascript">
+$('.M-box5').pagination({
+    pageCount: 50,
+    jump: true,
+    callback: function (api) {
+        var data = {
+            page: api.getCurrent(),
+            name: 'mss',
+            say: 'oh'
+        };
+        $.getJSON('https://www.easy-mock.com/mock/58fff7a5739ac1685205ad5d/example/pagination#!method=get', data, function (json) {
+            console.log(json);
+        });
+    }
+});
+</script> -->
+
+
+
+<!-- <div ms-controller="test">
  	<p>Hello,{{@aaa}}!</p>
- 	<!-- 这个性能差点 -->
+ 	这个性能差点
 	<div>{{@aaa}}{{@bbb}}</div>
-	<!-- 这个性能好 -->
+	这个性能好
 	<p>{{@aaa+@bbb}}</p>
-	<!-- 选择器必须放在表达式的后面 -->
+	选择器必须放在表达式的后面
 	<p>{{@aaa+@bbb | uppercase}}</p>
 	<p>{{@aaa+@bbb | lowercase}}</p>
-	<!-- 跳过某一部分区域，方便原样输出 ,输出的结果是{{@ccc}}，没有获取值-->
+	跳过某一部分区域，方便原样输出 ,输出的结果是{{@ccc}}，没有获取值
 	<div ms-skip='true'>{{@ccc}}</div>
 	<p>{{@ccc}}</p>
 	
@@ -59,7 +90,7 @@
 		</li>
 	</ul>
 	
-	<!-- 注意对象里面的 background-color不能这么写，需要使用驼峰命名的方式-->
+	注意对象里面的 background-color不能这么写，需要使用驼峰命名的方式
 	<p :css="{backgroundColor:@color1}">
 		你说你，想要逃，偏偏注定要落脚
 	</p>
@@ -79,7 +110,7 @@
 	<div :if="@toggle">{{@aaa}}</div>
 	<div :visible="@toggle">{{@bbb}}</div>
 </div>
-<!-- 这种写法不被允许，在IE里面是无法识别的 -->
+这种写法不被允许，在IE里面是无法识别的
 <p :attr="{style: 'background-color:yellow'}">1111</p>
 
 <hr>
@@ -90,9 +121,9 @@
 		<input type="text" :duplex="@array[index]"/>
 	</div>
 	<ul>
-		<!-- ms-for: el in @array -->
+		ms-for: el in @array
 		<li>{{el}}</li>
-		<!-- ms-for-end -->
+		ms-for-end
 	</ul>
 	<div :html="@html"></div>
 	<div :if="@one.bbb">谁的
@@ -103,14 +134,14 @@
 <hr/>
 <hr/>
 <div :controller="testClick">
-	<!-- <input type="text" :buplex="@name"> -->
+	<input type="text" :buplex="@name">
 	1.<button type="button" ms-click="@testOne($event, 100, @name)">testOne</button>
 	2.<button type="button" ms-click="@testTwo($event)">testTwo</button>
 	<div>{{@status}}</div>
 	3.<input ms-on-input="@testThree($event)">
 	<div>{{@field}}</div>
 	4.	<button type="button" ms-click="@testFour()">testThree</button>
-		<!-- 点击之后，count1,count2, count3同时增加数字 -->
+		点击之后，count1,count2, count3同时增加数字
 	5. <button :click="@testFive1" ms-click-2="@testFive2" ms-click-3="@testFive3">{{@count}}</button>
 	6. <button :click="@testFive2">{{@count}}</button>
 	7. <button :click="@testFive3">{{@count}}</button>
@@ -122,28 +153,29 @@
 <hr/>
 <hr/>
 <div :controller="testduplex">
-	<!-- 当控件失去焦点的时候，再同步数据 -->
+	当控件失去焦点的时候，再同步数据
 	<input :duplex="@username | change"/>{{@username}}
-	<!-- 有延迟的显示 -->
+	有延迟的显示
 	<input :duplex="@password | debounce(300)" type="password"/>{{@password}}
 	
 	<textarea rows="" cols="" :duplex="@textArea"></textarea>{{@textArea}}
-	<!-- div想要使用上这个功能，需要添加上div设置了contenteditable为true -->
+	div想要使用上这个功能，需要添加上div设置了contenteditable为true
 	<div contenteditable="true"  :duplex="div">
 	</div>
 	<p>{{@div}}</p>
 	
-	<!-- 设置默认选中 -->
+	设置默认选中
 	<input type="radio" value="11"  ms-duplex="@aaa"/>
     <input type="radio" value="22"  ms-duplex="@aaa"/>
     <input type="radio" value="33"  ms-duplex="@aaa"/>
-	<!-- 设置默认选中 -->
+	设置默认选中
 	<input type="checkbox" value="11"  ms-duplex="@bbb"/>
     <input type="checkbox" value="22"  ms-duplex="@bbb"/>
     <input type="checkbox" value="33"  ms-duplex="@bbb"/>
-    <!-- 设置默认选中 -->
+    设置默认选中
     <input type="checkbox"  ms-duplex-checked="true"/>
-</div>
+</div> -->
+
 	
 
 </body>
