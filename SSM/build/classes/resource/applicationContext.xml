@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:tx="http://www.springframework.org/schema/tx"  
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:mvc="http://www.springframework.org/schema/mvc"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans    
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+                        http://www.springframework.org/schema/context    
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd    
+                        http://www.springframework.org/schema/mvc    
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd 
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop.xsd 
+                        http://www.springframework.org/schema/tx
+       					http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">  
+ 	<!-- 引入配置文件 -->
+ 	<!-- <bean id="propertyConfigurer"  
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+        <property name="location" value="classpath*:jdbc.properties" />  
+    </bean> -->
+    
+    <context:property-placeholder location="classpath:resource/jdbc.properties" />
+    
+ 	<bean id="dataSource1" class="org.apache.commons.dbcp.BasicDataSource"  
+        destroy-method="close">  
+        <property name="driverClassName" value="${driverClassName}" />  
+        <property name="url" value="${url1}" />  
+        <property name="username" value="${username2}" />  
+        <property name="password" value="${password2}" />  
+        <!-- 初始化连接大小 -->  
+       <!--  <property name="initialSize" value="${initialSize}"></property>   -->
+        <!-- 连接池最大数量 -->  
+      <!--   <property name="maxActive" value="${maxActive}"></property>   -->
+        <!-- 连接池最大空闲 -->  
+        <!-- <property name="maxIdle" value="${maxIdle}"></property>   -->
+        <!-- 连接池最小空闲 -->  
+       <!--  <property name="minIdle" value="${minIdle}"></property> -->  
+        <!-- 获取连接最大等待时间 -->  
+        <!-- <property name="maxWait" value="${maxWait}"></property>   -->
+    </bean>
+
+	<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="url" value="${url2}" />
+		<property name="username" value="${username2}" />
+		<property name="password" value="${password2}" />
+		<!-- 初始化连接大小 -->
+		<!-- <property name="initialSize" value="${initialSize}"></property> -->
+		<!-- 连接池最大数量 -->
+		<!-- <property name="maxActive" value="${maxActive}"></property> -->
+		<!-- 连接池最大空闲 -->
+		<!-- <property name="maxIdle" value="${maxIdle}"></property> -->
+		<!-- 连接池最小空闲 -->
+		<!-- <property name="minIdle" value="${minIdle}"></property> -->
+		<!-- 获取连接最大等待时间 -->
+		<!-- <property name="maxWait" value="${maxWait}"></property> -->
+	</bean>  
+	
+	<!-- 配置多数据源 -->
+	<bean id="dataSource" class="com.xpp.test.config.ThreadLocalRountingDataSource">
+		<property name="defaultTargetDataSource" ref="dataSource1" />
+		<property name="targetDataSources">
+			<map key-type="com.xpp.test.config.DataSources">
+				<entry key="db1" value-ref="dataSource1"></entry>
+				<entry key="db2" value-ref="dataSource2"></entry>
+			</map>
+		</property>
+	</bean>
+	
+	
+    
+    <!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->  
+    <context:component-scan base-package="com.xpp.test.*" />  
+ 	
+ 	<!-- 开启RequestMapping注解 --> 	
+ 	<mvc:annotation-driven />
+ 	
+ 	<!-- 开启aop注解扫描 -->
+ 	<!-- 启动对@Aspectj的支持 true为cglib，false为jdk代理，为true的话，会导致拦截不了mybatis的mapper -->
+ 	<aop:aspectj-autoproxy proxy-target-class="false" />
+ 	
+ 	<!-- 声明事务管理组件，使用得是jdbc的事务管理 -->
+ 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ 		<property name="dataSource" ref ="dataSource"></property>
+ 	</bean>
+	<!-- 开启事务注解扫描,proxy-target-class属性值决定是基于接口的还是基于类的代理被创建。
+	如果proxy-target-class 属性值被设置为true，那么基于类的代理将起作用（这时需要cglib库）。
+	如果proxy-target-class属值被设置为false或者这个属性被省略，那么标准的JDK 基于接口的代理将起作用。
+	proxy-target-class="true" -->
+	<tx:annotation-driven transaction-manager="txManager" />
+	
+  	
+    <!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->  
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <property name="dataSource" ref="dataSource" />  
+        <!-- 自动扫描mapping.xml文件 -->  
+        <property name="mapperLocations" value="classpath:com/xpp/test/mapping/*.xml"></property>  
+    </bean>
+  
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->  
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="com.xpp.test.dao" />  
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
+    </bean>
+
+    
+    <!-- 处理请求转发 -->  
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+        <!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->  
+        <property name="prefix" value="/WEB-INF/jsp/" />  
+        <property name="suffix" value=".jsp" />  
+    </bean>  
+    
+    
+    <!-- aop前置通知 -->
+<!--    	<aop:config>
+   		<aop:aspect ref="Aspect1">
+   			<aop:before method="logOne" pointcut="within(controller..*)"/>
+   		</aop:aspect>
+   	</aop:config> -->
+   
+  
+<!--     避免IE执行AJAX时，返回JSON出现下载文件  
+    <bean id="mappingJacksonHttpMessageConverter"  
+        class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">  
+        <property name="supportedMediaTypes">  
+            <list>  
+                <value>text/html;charset=UTF-8</value>  
+            </list>  
+        </property>  
+    </bean>  
+    启动SpringMVC的注解功能，完成请求和注解POJO的映射  
+    <bean  
+        class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">  
+        <property name="messageConverters">  
+            <list>  
+                <ref bean="mappingJacksonHttpMessageConverter" /> JSON转换器  
+            </list>  
+        </property>  
+    </bean>   -->
+</beans>  
